@@ -47,6 +47,10 @@ const enum Re{
 }
 console.log(Re.Up)
 
+自定义类型
+type ButtonType="primary"|"default"|"danger"|"link";
+
+
 泛型
 function echo<T>(arg:T): T {
     return arg;
