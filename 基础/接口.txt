@@ -1,0 +1,9 @@
+interface Person{
+	readonly id: number;//只读属性
+	name: string;
+	age: number;
+	year?: number; //可选
+	method1(): void;
+	method2(): string;
+}
+

@@ -1,0 +1,2 @@
+//声明
+declare var jQuery:(selector: string) => any

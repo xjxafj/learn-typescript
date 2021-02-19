@@ -1,0 +1,191 @@
+React class 组件的详细 API 参考：
+一、组件还提供了一些额外的 API：
+	setState()
+	forceUpdate()
+二、class 属性
+	defaultProps
+	displayName
+三、实例属性
+	props
+	state
+
+
+四、生命周期
+当组件实例被创建并插入 DOM 中时，其生命周期调用顺序如下：
+①挂载
+	constructor()
+	static getDerivedStateFromProps()
+	render()
+	componentDidMount()
+②
+
+
+
+
+
+
+基本使用方法
+1. 类组件写法
+import React from 'react'
+interface Props {
+    endDate: string,
+    timeout: any
+}
+interface State {
+    now: any
+}
+let timer: any = null
+class CountDown extends React.Component<Props, State>{
+	
+	//getDerivedStateFromProps 会在调用 render 方法之前调用，并且在初始挂载及后续更新时都会被调用。它应返回一个对象来更新 state，如果返回 null 则不更新任何内容。
+	static getDerivedStateFromProps(props, state){
+	}
+
+	//组件初始化
+	constructor(props){
+		super(props);
+	}
+	
+	//加载数据
+    componentDidMount(){
+        timer = setInterval((): void => {
+            this.setState({
+                now: moment()
+            })
+        }, 1000)
+    }
+
+
+	//在最近一次渲染输出（提交到 DOM 节点）之前调用。它使得组件能在发生更改之前从 DOM 中捕获一些信息（例如，滚动位置）。此生命周期的任何返回值将作为参数传递给 componentDidUpdate()。
+	 getSnapshotBeforeUpdate(prevProps, prevState) {
+		// 我们是否在 list 中添加新的 items ？
+		// 捕获滚动​​位置以便我们稍后调整滚动位置。
+		if (prevProps.list.length < this.props.list.length) {
+			  const list = this.listRef.current;
+			  return list.scrollHeight - list.scrollTop;
+		}
+		return null;
+	}
+
+    //componentDidUpdate() 会在更新后会被立即调用。首次渲染不会执行此方法。
+	//组件更新如果 shouldComponentUpdate() 返回值为 false，则不会调用 componentDidUpdate()。
+	componentDidUpdate(prevProps, prevState, snapshot){
+	}
+	
+	//会在组件卸载及销毁之前直接调用。在此方法中执行必要的清理操作，例如，清除 timer，取消网络请求或清除在 componentDidMount() 中创建的订阅等。
+    componentWillUnmount(){
+        clearInterval(timer)
+    }
+	
+	//此生命周期会在后代组件抛出错误后被调用。 它将抛出的错误作为参数，并返回一个值以更新
+	static getDerivedStateFromError(error) {
+		// 更新 state 使下一次渲染可以显降级 UI
+		return { hasError: true };
+	}
+
+    
+    get countDown(){ //类似 vue 中的计算属性
+        return (endDate: string): string => {
+            //...
+            }
+        }
+    }
+
+	//渲染
+    render() {
+		return (
+		  <div ref={this.listRef}>{/* ...contents... */}</div>
+		);
+	}	
+}
+	
+export default CountDown
+
+2. 函数组件写法
+import React from 'react';
+interface IHello2Porps{
+    message?: string
+}
+const Hello: React.FunctionComponent<IHello2Porps> = (props) => {
+    return <h2>{props.message}</h2>
+}
+//组件默认值
+Hello.defaultProps={
+    message:"defaultProps"
+}
+export default Hello
+
+//useState用于组件状态描述
+import {useState,useEffect} from 'react';
+//定义状态
+const [position,setPosition]=useState({
+        x:0,
+        y:0,
+    });
+//设置值
+ setPosition({
+            x:2,
+            y:3,
+        })
+//使用值
+position.x
+position.y
+
+//useEffect用户组件渲染后其他操作，如打印日志等
+useEffect(()=>{
+		//组件渲染条用，可以使用第二个参数是否变化控制是否执行
+        console.log(`add useMouseMovePosition`)
+        document.addEventListener('click',updateMousePosition)
+        return ()=>{
+			//执行完成后调用
+            console.log(`remove useMouseMovePosition`)
+            document.removeEventListener('click',updateMousePosition)
+        }     
+    },[position.x,position.y])
+	
+import {useState,useEffect} from 'react';
+/**
+ * 
+ * 自定义hooks,函数必须以use开头
+ * 
+ * */
+const useMouseMovePosition=()=>{
+    const [position,setPosition]=useState({
+        x:0,
+        y:0,
+    });
+    function updateMousePosition(e:MouseEvent){
+        setPosition({
+            x:e.clientX,
+            y:e.clientY,
+        })
+    }
+    useEffect(()=>{
+        console.log(`add useMouseMovePosition`)
+        document.addEventListener('click',updateMousePosition)
+        return ()=>{
+            console.log(`remove useMouseMovePosition`)
+            document.removeEventListener('click',updateMousePosition)
+        }     
+    },[position.x,position.y])
+    return position
+}
+export default useMouseMovePosition
+
+自定义hooks使用
+import useMouseMovePosition from '../hooks/mouseMovePosition';
+const position=useMouseMovePosition();
+position.x
+position.y
+
+
+
+
+
+
+
+
+
+
+
+

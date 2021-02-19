@@ -1,0 +1,5 @@
+//工具
+cnpm isntall -g ts-node
+ts-node 文件 运行命令
+ 
+

@@ -1,0 +1,92 @@
+1.node.js
+2.脚手架环境搭建
+
+
+在 React 中使用 Typescript
+前言
+用 Typescript 写 react 可比写 vue 舒服太多了，react 对 ts 的支持可谓天生搭档，如果要用 ts 重构项目，不像 vue 对项目破坏性极大，React 可以相对轻松的实现重构。
+提示：全局安装的 create-react-app 现已无法再下载完整的 React 项目模版，必须先 npm uninstall -g create-react-app 移除命令 再 npx create-react-app demo 下载模版，参考 create-react-app 官方github
+ 
+主要步骤
+1. 生成一个全新的 ts + react 的模版 
+可直接使用指令：npx create-react-app demo --template typescript， 该模版包含了全套正常运行 React 所需的包和配置，无需再额外手动安装 typescript 等，其中还包含了自动化测试文件以及PWA所需文件等，可自行根据需求增删。
+
+如在已有项目中使用typescript，需要手动安装 typescript @types/react @types/react-dom（使用@types/前缀表示我们额外要获取React和React-DOM的声明文件），然后在根目录下创建一个 tsconfig.json 文件，改后缀为 .tsx 
+{
+  "compilerOptions": {
+    "target": "es5",
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "allowjs": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "react"
+  },
+  "include": [
+    "src"
+  ]
+}
+2. 使用各种第三方库，如路由库 react-router-dom（需要额外安装声明文件@types/react-router-dom）、状态管理库 react-redux（需要额外安装声明文件@types/react-redux）、axios、在typescript中使用antd等。
+
+电脑刺绣绣花厂 http://www.szhdn.com 广州品牌设计公司https://www.houdianzi.com
+
+基本使用方法
+1. 类组件写法
+import React from 'react'
+
+interface Props {
+    endDate: string,
+    timeout: any
+}
+interface State {
+    now: any
+}
+let timer: any = null
+class CountDown extends React.Component<Props, State>{
+    readonly state: Readonly<State> = {
+        now: moment()
+    }
+
+    componentDidMount(){
+        timer = setInterval((): void => {
+            this.setState({
+                now: moment()
+            })
+        }, 1000)
+    }
+    componentWillUnmount(){
+        clearInterval(timer)
+    }
+    
+    get countDown(){ //类似 vue 中的计算属性
+        return (endDate: string): string => {
+            //...
+            }
+        }
+    }
+
+    render(): any{
+        return (
+            ......
+        )
+    }
+}
+
+export default CountDown
+2. 函数组件写法
+
+const App: React.FC<Prop> = (prop) => {
+    return ()
+}
+
